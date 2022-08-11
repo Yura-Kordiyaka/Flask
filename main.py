@@ -19,6 +19,27 @@ def general():
     return d
 
 
+@app.route('/search', methods=['Get'])
+def search_email():
+    return render_template("search.html")
+
+
+@app.route('/result/search', methods=['post'])
+def result_search():
+    form = request.form
+    d = read()
+    i = 0
+    h = d[0]
+    for k in d:
+        if str(k['Email']) == form['email']:
+            h = k
+            i = i + 1
+    if i > 0:
+        return h
+    elif i == 0:
+        return "incorrect data"
+
+
 @app.route('/change', methods=['GET'])
 def change():
     return render_template('change.html')
@@ -28,10 +49,10 @@ def change():
 def after_change():
     form = request.form
     dictionary = {
-        "Email": form['email'],
         "first_name": form['fname'],
+        "last_name": form['lname'],
+        "Email": form['email'],
         "id": form['id'],
-        "last_name": form['lname']
     }
     d = read()
     h = d[0]
@@ -96,6 +117,27 @@ def save():
         outfile.write(json.dumps(a))
         outfile.close()
     return "Your last add \n" + str(a[-1])
+
+
+@app.route("/auhtorized", methods=["get"])
+def auhtorized():
+    return render_template('auhtorized.html')
+
+
+@app.route('/auhtorized/successfully', methods=["post"])
+def auhtorized_successfully():
+    form = request.form
+    d = read()
+    t = form['passwords']
+    i = 0
+    f = 3
+    for k in d:
+        if str(k['Email']) == str(form['email']) and k['password'] == form['passwords']:
+            i = +1
+    if i > 0:
+        return render_template('auhtorized_successfully.html')
+    elif i == 0:
+        return "incorrect data"
 
 
 if __name__ == "__main__":

@@ -1,1 +1,37 @@
-[{"first_name": "Yura", "last_name": "Luzhnuy", "Email": "l.luzhnuy@gmail.com", "id": 1}, {"first_name": "Ivan", "last_name": "Kucher", "Email": "ivan.kucher@gmail.com", "id": 2}, {"first_name": "Yura", "last_name": "Mane", "Email": "Mane@gmail.com", "id": 4}, {"first_name": "Stepan", "last_name": "Bara", "Email": "Bara@gmail.com", "id": 5}, {"Email": "ta@gmail.com", "first_name": "messi", "id": "12", "last_name": "maradona"}]
+[
+  {
+    "first_name": "Yura",
+    "last_name": "Luzhnuy",
+    "Email": "l.luzhnuy@gmail.com",
+    "password": "asdfzxcv",
+    "id": 1
+  },
+  {
+    "first_name": "Ivan",
+    "last_name": "Kucher",
+    "Email": "ivan.kucher@gmail.com",
+    "password": "qweqweqw",
+    "id": 2
+  },
+  {
+    "first_name": "Yura",
+    "last_name": "Mane",
+    "Email": "Mane@gmail.com",
+    "password": "qwerwqette",
+    "id": 4
+  },
+  {
+    "first_name": "Stepan",
+    "last_name": "Bara",
+    "Email": "Bara@gmail.com",
+    "password": "assdasadfsadf",
+    "id": 5
+  },
+  {
+    "first_name": "yura ",
+    "last_name": "taras",
+    "Email": "l.luzhnuy@gmail.com",
+    "password": "assdasadfsadf",
+    "id": "12"
+  }
+]
