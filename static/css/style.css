@@ -1,0 +1,28 @@
+body {
+    background: url("watercolor-5062356.jpg");
+}
+
+.title {
+    text-align: center;
+    color: darkblue;
+    font-size: 100px;
+}
+
+a {
+    color: firebrick;
+    font-size: 22px;
+    font-family: cursive;
+}
+
+.box {
+    box-shadow: 0 5px 10px;
+    border-radius: 10px;
+
+}
+.card{
+    display: block;
+    width:800px;
+    height: 800px;
+    margin: 0 auto;
+    border-radius: 50%;
+}
