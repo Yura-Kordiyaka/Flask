@@ -1,9 +1,6 @@
 import json
 from flask import Flask, render_template, request, redirect
-
-app = Flask(__name__)
-
-
+from app import app
 def read():
     with open('database/user.json', 'r') as f:
         g = f.read()
@@ -243,13 +240,6 @@ def after_delete_car():
         return "<h1>incorrect data</h1>"
 
 
-
-
-
 @app.route('/')
 def da():
     return render_template('shapka.html')
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
