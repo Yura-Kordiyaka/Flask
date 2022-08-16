@@ -1,6 +1,10 @@
 import json
 from flask import Flask, render_template, request, redirect
 from app import app
+from models import *
+from helpers.helps import *
+
+
 def read():
     with open('database/user.json', 'r') as f:
         g = f.read()
@@ -19,14 +23,14 @@ def read_for_car():
 
 @app.route('/menu', methods=['Get'])
 def general():
-    d = read()
-    return d
+    us = User.query.all()
+    return convert_all(us)
 
 
 @app.route('/showCars', methods=['get'])
 def show_car():
-    d = read_for_car()
-    return d
+    cars = Cars.query.all()
+    return convert_all(cars)
 
 
 @app.route('/search', methods=['Get'])
@@ -114,19 +118,22 @@ def delete():
 @app.route('/show', methods=['POST'])
 def save():
     form = request.form
-    dictionary = {
-        "first_name": form['fname'],
-        "last_name": form['lname'],
-        "Email": form['email'],
-        "id": form['id']
-    }
-    d = read()
-    a = list(d)
-    a.append(dictionary)
-    with open("database/user.json", "w") as outfile:
-        outfile.write(json.dumps(a))
-        outfile.close()
-    return "Your last add \n" + str(a[-1])
+    # dictionary = {
+    #     "first_name": form['fname'],
+    #     "last_name": form['lname'],
+    #     "Email": form['email'],
+    #     "id": form['id']
+    # }
+    # d = read()
+    # a = list(d)
+    # a.append(dictionary)
+    # with open("database/user.json", "w") as outfile:
+    #     outfile.write(json.dumps(a))
+    #     outfile.close()
+    user = User(id=form['id'], first_name=form['fname'], last_name=form['lname'], email=form['email'])
+    db.session.add(user)
+    db.session.commit()
+    return user.serialize
 
 
 @app.route("/auhtorized", methods=["get"])
@@ -157,21 +164,23 @@ def add_car():
 
 @app.route('/add-car', methods=["post"])
 def addcar_result():
-    f = read_for_car()
     form = request.form
-    dictionary = {
-        'Brand': form['Brand'],
-        'Type': form['Type'],
-        'Number': form['Number'],
-        'user_id': form['user_id']
-    }
-    a = list(f)
-    a.append(dictionary)
-    with open("database/cars.json", "w") as outfile:
-        outfile.write(json.dumps(a))
-        outfile.close()
-    return "Your last add \n" + str(a[-1])
-
+    # f = read_for_car()
+    # dictionary = {
+    #     'Brand': form['Brand'],
+    #     'Type': form['Type'],
+    #     'Number': form['Number'],
+    #     'user_id': form['user_id']
+    # }
+    # a = list(f)
+    # a.append(dictionary)
+    # with open("database/cars.json", "w") as outfile:
+    #     outfile.write(json.dumps(a))
+    #     outfile.close()
+    cars = Cars(Brand=form['Brand'], Type=form['Type'], Number=form['Number'], user_id=form['user_id'])
+    db.session.add(cars)
+    db.session.commit()
+    return cars.serialize
 
 @app.route("/change/car", methods=['get'])
 def change_car():
