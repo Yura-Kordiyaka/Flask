@@ -9,3 +9,5 @@ def convert_all(list):
     for i in list:
         l.append(i.serialize)
     return l
+
+

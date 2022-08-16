@@ -41,17 +41,22 @@ def search_email():
 @app.route('/result/search', methods=['post'])
 def result_search():
     form = request.form
-    d = read()
-    i = 0
-    h = d[0]
-    for k in d:
-        if str(k['Email']) == form['email']:
-            h = k
-            i = i + 1
-    if i > 0:
-        return h
-    elif i == 0:
-        return "incorrect data"
+    # d = read()
+    # i = 0
+    # h = d[0]
+    # for k in d:
+    #     if str(k['Email']) == form['email']:
+    #         h = k
+    #         i = i + 1
+    # if i > 0:
+    #     return h
+    # elif i == 0:
+    #     return "incorrect data"
+    d = User.query.filter_by(email=form['email']).first()
+    if User.query.filter_by(email=form['email']).first():
+        return d.serialize
+    else:
+        return "<h1>incorrect data</h1>"
 
 
 @app.route('/change', methods=['GET'])
@@ -62,27 +67,41 @@ def change():
 @app.route('/after_change', methods=['post'])
 def after_change():
     form = request.form
-    dictionary = {
-        "first_name": form['fname'],
-        "last_name": form['lname'],
-        "Email": form['email'],
-        "id": form['id'],
-    }
-    d = read()
-    h = d[0]
+    # dictionary = {
+    #     "first_name": form['fname'],
+    #     "last_name": form['lname'],
+    #     "Email": form['email'],
+    #     "id": form['id'],
+    # }
+    # d = read()
+    # h = d[0]
+    # i = 0
+    # for k in d:
+    #     if str(k['id']) == form['id']:
+    #         h = k
+    # for k in range(0, len(d)):
+    #     if h == d[k]:
+    #         i = k
+    # d[i] = dictionary
+    # a = list(d)
+    # with open("database/user.json", "w") as outfile:
+    #     outfile.write(json.dumps(a))
+    #     outfile.close()
+    # return redirect('/menu')
     i = 0
-    for k in d:
-        if str(k['id']) == form['id']:
-            h = k
-    for k in range(0, len(d)):
-        if h == d[k]:
-            i = k
-    d[i] = dictionary
-    a = list(d)
-    with open("database/user.json", "w") as outfile:
-        outfile.write(json.dumps(a))
-        outfile.close()
-    return redirect('/menu')
+    user = User(id=form['id'], first_name=form['fname'], last_name=form['lname'], email=form['email'])
+    d = User.query.filter_by(id=form['id']).first()
+    if User.query.filter_by(id=form['id']).first():
+        i += 1
+    if i > 0:
+        d.id = form['id']
+        d.first_name = form['fname']
+        d.last_name = form['lname']
+        d.email = form['email']
+        db.session.commit()
+        return redirect("/menu")
+    elif i == 0:
+        return "<h1>incorrect data</h1>"
 
 
 @app.route('/add', methods=['GET'])
@@ -98,21 +117,28 @@ def choose():
 @app.route('/delete', methods=['post'])
 def delete():
     form = request.form
-    d = read()
-    f = d[0]
-    i = 0
-    for k in d:
-        if str(k['id']) == form['id']:
-            f = k
-    for k in range(0, len(d)):
-        if d[k] == f:
-            i = k
-    a = list(d)
-    a.pop(i)
-    with open("database/user.json", "w") as outfile:
-        outfile.write(json.dumps(a))
-        outfile.close()
-    return a
+    # d = read()
+    # f = d[0]
+    # i = 0
+    # for k in d:
+    #     if str(k['id']) == form['id']:
+    #         f = k
+    # for k in range(0, len(d)):
+    #     if d[k] == f:
+    #         i = k
+    # a = list(d)
+    # a.pop(i)
+    # with open("database/user.json", "w") as outfile:
+    #     outfile.write(json.dumps(a))
+    #     outfile.close()
+    # return a
+    d = User.query.filter_by(id=form['id']).first()
+    if User.query.filter_by(id=form['id']).first():
+        db.session.delete(d)
+        db.session.commit()
+        return redirect("/menu")
+    else:
+        return "<h1>incorrect data</h1>"
 
 
 @app.route('/show', methods=['POST'])
@@ -144,17 +170,21 @@ def auhtorized():
 @app.route('/auhtorized/successfully', methods=["post"])
 def auhtorized_successfully():
     form = request.form
-    d = read()
-    t = form['passwords']
-    i = 0
-    f = 3
-    for k in d:
-        if str(k['Email']) == str(form['email']) and k['password'] == form['passwords']:
-            i = +1
-    if i > 0:
+    # d = read()
+    # t = form['passwords']
+    # i = 0
+    # f = 3
+    # for k in d:
+    #     if str(k['Email']) == str(form['email']) and k['password'] == form['passwords']:
+    #         i = +1
+    # if i > 0:
+    #     return render_template('auhtorized_successfully.html')
+    # elif i == 0:
+    #     return "incorrect data"
+    if User.query.filter_by(email=form['email']).first() and User.query.filter_by(password=form['passwords']).first():
         return render_template('auhtorized_successfully.html')
-    elif i == 0:
-        return "incorrect data"
+    else:
+        return "<h1>incorrect data</h1>"
 
 
 @app.route('/addcars', methods=['get'])
@@ -182,6 +212,7 @@ def addcar_result():
     db.session.commit()
     return cars.serialize
 
+
 @app.route("/change/car", methods=['get'])
 def change_car():
     return render_template('change-car.html')
@@ -190,32 +221,45 @@ def change_car():
 @app.route('/change-car', methods=['post'])
 def after_change_car():
     form = request.form
-    dictionary = {
-        'Brand': form['Brand'],
-        'Type': form['Type'],
-        'Number': form['Number'],
-        'user_id': form['user_id']
-    }
-    d = read_for_car()
-    r = form['user_id']
-    h = d[0]
+    # # # dictionary = {
+    # # #     'Brand': form['Brand'],
+    # # #     'Type': form['Type'],
+    # # #     'Number': form['Number'],
+    # # #     'user_id': form['user_id']
+    # # # }
+    # # # d = read_for_car()
+    # # # r = form['user_id']
+    # # # h = d[0]
+    # # # i = 0
+    # # # z = 0
+    # # # for k in d:
+    # # #     if str(k['user_id']) == str(r):
+    # # #         h = k
+    # # #         z += 1
+    # # # for k in range(0, len(d)):
+    # # #     if h == d[k]:
+    # # #         i = k
+    # # # d[i] = dictionary
+    # # # a = list(d)
+    # # # if z > 0:
+    # #     with open("database/cars.json", "w") as outfile:
+    # #         outfile.write(json.dumps(a))
+    # #         outfile.close()
+    # #     return redirect('/showCars')
+    # elif z == 0:
     i = 0
-    z = 0
-    for k in d:
-        if str(k['user_id']) == str(r):
-            h = k
-            z += 1
-    for k in range(0, len(d)):
-        if h == d[k]:
-            i = k
-    d[i] = dictionary
-    a = list(d)
-    if z > 0:
-        with open("database/cars.json", "w") as outfile:
-            outfile.write(json.dumps(a))
-            outfile.close()
-        return redirect('/showCars')
-    elif z == 0:
+
+    d = Cars.query.filter_by(user_id=form['user_id']).first()
+    if Cars.query.filter_by(user_id=form['user_id']).first():
+        i += 1
+    if i > 0:
+        d.Brand = form['Brand']
+        d.Type = form['Type']
+        d.Number = form['Number']
+        d.user_id = form['user_id']
+        db.session.commit()
+        return d.serialize
+    elif i == 0:
         return "<h1>incorrect data</h1>"
 
 
@@ -227,25 +271,31 @@ def delete_car():
 @app.route('/delete/car', methods=["post"])
 def after_delete_car():
     form = request.form
-    d = read_for_car()
-    f = d[0]
-    i = 0
-    l = 0
-    for k in d:
-        if str(k['user_id']) == form['user_id']:
-            f = k
-            l += 1
-    for k in range(0, len(d)):
-        if d[k] == f:
-            i = k
-    a = list(d)
-    a.pop(i)
-    if l > 0:
-        with open("database/cars.json", "w") as outfile:
-            outfile.write(json.dumps(a))
-            outfile.close()
-        return a
-    elif l == 0:
+    # d = read_for_car()
+    # f = d[0]
+    # i = 0
+    # l = 0
+    # for k in d:
+    #     if str(k['user_id']) == form['user_id']:
+    #         f = k
+    #         l += 1
+    # for k in range(0, len(d)):
+    #     if d[k] == f:
+    #         i = k
+    # a = list(d)
+    # a.pop(i)
+    # if l > 0:
+    #     with open("database/cars.json", "w") as outfile:
+    #         outfile.write(json.dumps(a))
+    #         outfile.close()
+    #     return a
+    # elif l == 0:
+    #     return "<h1>incorrect data</h1>"
+    d = Cars.query.filter_by(user_id=form['user_id']).first()
+    if User.query.filter_by(user_id=form['user_id']).first():
+        db.session.delete(d)
+        db.session.commit()
+    else:
         return "<h1>incorrect data</h1>"
 
 
